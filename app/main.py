@@ -1,5 +1,13 @@
 from fastapi import FastAPI
 
+from app.database import Base, engine
+from app import models
+from app.routers.productos import router as productos_router
+
+
+Base.metadata.create_all(bind=engine)
+
+
 app = FastAPI(
     title="API E-Commerce Argentino",
     description=(
@@ -13,10 +21,6 @@ app = FastAPI(
 
 @app.get("/")
 async def read_root():
-    """
-    Endpoint de bienvenida.
-    Proporciona información de inicio y aclara el marco legal aplicable.
-    """
     return {
         "mensaje": "Bienvenido a la API oficial del E-Commerce Argentino",
         "estado": "Operativo",
@@ -25,13 +29,17 @@ async def read_root():
             "normativa": "Ley N° 24.240 de Defensa del Consumidor",
             "jurisdiccion": "República Argentina",
             "nota_legal": (
-                "De conformidad con el artículo 4° de la Ley 24.240, el proveedor está obligado "
-                "a suministrar a los consumidores información en forma cierta, clara y detallada "
-                "sobre todo lo relacionado con las características esenciales de los bienes y servicios."
-            )
+                "De conformidad con el artículo 4° de la Ley 24.240, "
+                "el proveedor está obligado a suministrar a los consumidores "
+                "información en forma cierta, clara y detallada sobre todo lo "
+                "relacionado con las características esenciales de los bienes y servicios."
+            ),
         },
         "documentacion": {
             "swagger": "/docs",
-            "redoc": "/redoc"
-        }
+            "redoc": "/redoc",
+        },
     }
+
+
+app.include_router(productos_router)
