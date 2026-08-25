@@ -15,9 +15,6 @@ router = APIRouter(
 
 @router.get("", response_model=List[Producto])
 def obtener_productos(db: Session = Depends(get_db)):
-    """
-    Obtiene todos los productos guardados en PostgreSQL.
-    """
     return db.query(models.Producto).all()
 
 
@@ -26,9 +23,6 @@ def crear_producto(
     producto: Producto,
     db: Session = Depends(get_db)
 ):
-    """
-    Crea un producto y lo guarda en PostgreSQL.
-    """
     nuevo_producto = models.Producto(
         id=producto.id,
         nombre=producto.nombre,
