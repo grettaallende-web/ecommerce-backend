@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends
 from typing import List
 from sqlalchemy.orm import Session
 
-from app.schemas.producto import Producto
+from app.schemas.producto import ProductoCreate, ProductoOut
 from app.database import get_db
-from app import models
+from app.services import productos as productos_service
 
 
 router = APIRouter(
@@ -13,27 +13,26 @@ router = APIRouter(
 )
 
 
-@router.get("", response_model=List[Producto])
-def obtener_productos(db: Session = Depends(get_db)):
-    return db.query(models.Producto).all()
-
-
-@router.post("", response_model=Producto)
-def crear_producto(
-    producto: Producto,
+@router.get("", response_model=List[ProductoOut])
+def obtener_productos(
+    skip: int = 0,
+    limit: int = 10,
+    nombre: str | None = None,
+    precio_max: float | None = None,
     db: Session = Depends(get_db)
 ):
-    nuevo_producto = models.Producto(
-        id=producto.id,
-        nombre=producto.nombre,
-        precio_final=producto.precio_final,
-        cuotas_cantidad=producto.cuotas_cantidad,
-        cuotas_valor=producto.cuotas_valor,
-        garantia_meses=producto.garantia_meses
+    return productos_service.listar_productos(
+        db,
+        skip=skip,
+        limit=limit,
+        nombre=nombre,
+        precio_max=precio_max
     )
 
-    db.add(nuevo_producto)
-    db.commit()
-    db.refresh(nuevo_producto)
 
-    return nuevo_producto
+@router.post("", response_model=ProductoOut)
+def crear_producto(
+    producto: ProductoCreate,
+    db: Session = Depends(get_db)
+):
+    return productos_service.crear_producto(db, producto)

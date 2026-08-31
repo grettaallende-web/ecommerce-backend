@@ -11,3 +11,4 @@ class Producto(Base):
     cuotas_cantidad = Column(Integer)
     cuotas_valor = Column(Float)
     garantia_meses = Column(Integer)
+    stock = Column(Integer)
