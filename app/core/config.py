@@ -8,8 +8,15 @@ class Settings(BaseSettings):
     )
 
     PROJECT_NAME: str = "API E-Commerce IRESM"
+
     DATABASE_URL: str
+
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
+
+    SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+    ACCESS_MIN: int = 30
+    REFRESH_MIN: int = 10080
 
     @property
     def origins(self) -> list[str]:

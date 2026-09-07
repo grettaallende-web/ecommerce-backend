@@ -5,6 +5,7 @@ from app import models
 from app.database import Base, engine
 from app.core.config import settings
 from app.routers.productos import router as productos_router
+from app.routers.auth import router as auth_router
 
 
 Base.metadata.create_all(bind=engine)
@@ -33,3 +34,4 @@ def read_root():
 
 
 app.include_router(productos_router)
+app.include_router(auth_router)
