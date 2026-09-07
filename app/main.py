@@ -1,7 +1,9 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from app.database import Base, engine
 from app import models
+from app.database import Base, engine
+from app.core.config import settings
 from app.routers.productos import router as productos_router
 
 
@@ -9,22 +11,24 @@ Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI(
-    title="API E-Commerce Argentino",
-    description="API profesional para e-commerce en la República Argentina.",
-    version="1.0.0",
+    title=settings.PROJECT_NAME,
+)
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
 @app.get("/")
-async def read_root():
+def read_root():
     return {
-        "mensaje": "Bienvenido a la API oficial del E-Commerce Argentino",
-        "estado": "Operativo",
-        "version": "1.0.0",
-        "documentacion": {
-            "swagger": "/docs",
-            "redoc": "/redoc"
-        }
+        "status": "ok",
+        "app": settings.PROJECT_NAME
     }
 
 

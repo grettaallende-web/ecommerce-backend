@@ -32,3 +32,9 @@ def listar_productos(
         )
 
     return query.offset(skip).limit(limit).all()
+
+
+def obtener_producto(db, producto_id: int):
+    return db.query(models.Producto).filter(
+        models.Producto.id == producto_id
+    ).first()
